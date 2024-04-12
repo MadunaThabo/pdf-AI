@@ -23,7 +23,7 @@ from transformers import ConversationalPipeline
 
 
 def get_pdf_text(pdf_docs):
-    text = "answer questions based on the foollowing:"
+    text = ""
     for pdf in pdf_docs:
         pdf_reader = PdfReader(pdf)
         for page in pdf_reader.pages:
@@ -41,25 +41,18 @@ def get_text_chunks(text):
     return chunks
 
 def get_vectorstore(text_chunks):
-    # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
-    embeddings = HuggingFaceInstructEmbeddings(model_name="./googleflanT5Large/instructorX1/instructor-xl")
+    embeddings = HuggingFaceInstructEmbeddings(model_name="./googleflanT5Large/instructorX1/instructor-xl") #this is local
     vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
     print("\nVectorStore:",vectorstore, "\n")
     return vectorstore
 
 def get_conversation_chain(vectorstore):
-    # llm = HuggingFaceHub(repo_id="lmsys/fastchat-t5-3b-v1.0", model_kwargs={"temperature":0.5, "max_length":512})
-    # llm = AutoModelForSeq2SeqLM.from_pretrained("./googleflanT5Large/flan-t5-large") #for working locally
-    # local_llm = LLM(model_dir="./googleflanT5Large/flan-t5-large")
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    # conversation_chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=vectorstore.as_retriever(), memory=memory)
-
     model_name = "./googleflanT5Large/flan-t5-large"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     model.config.temperature = 0.5  # Change the temperature here
     conversation_chain = ConversationalPipeline(model=model,tokenizer=tokenizer)
-    # conversation_chain = ConversationalRetrievalChain.from_llm(llm=local_llm, retriever=vectorstore.as_retriever(), memory=memory)
     return conversation_chain
 
 
