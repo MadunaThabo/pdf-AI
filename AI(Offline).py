@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.chains import RetrievalQA
 from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain_community.chains import RetrievalQA
 from langchain_community.llms import HuggingFacePipeline
 
 def get_pdf_text(pdf_docs):
@@ -25,14 +25,14 @@ def get_text_chunks(text):
     return chunks
 
 def get_vectorstore(text_chunks):
-    embeddings = HuggingFaceInstructEmbeddings(model_name="./googleflanT5Large/instructorX1/instructor-xl") #this is local
+    embeddings = HuggingFaceInstructEmbeddings(model_name="./pretrainedModels/instructor-xl") #this is local
     vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
     print("\nVectorStore:",vectorstore, "\n")
     return vectorstore
 
 def get_conversation_chain(vectorstore):
     # Load the local model components
-    model_name = "./googleflanT5Large/flan-t5-large"
+    model_name = "./pretrainedModels/flan-t5-large"
     llm = HuggingFacePipeline.from_model_id(model_id= model_name, task="text2text-generation", model_kwargs={"temperature": 0, "max_length": 200})
     conversation_chain = RetrievalQA.from_chain_type(llm, retriever=vectorstore.as_retriever())
     return conversation_chain

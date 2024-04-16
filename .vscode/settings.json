@@ -1,0 +1,15 @@
+{
+    "cSpell.words": [
+        "dotenv",
+        "FAISS",
+        "fastchat",
+        "googleflan",
+        "hkunlp",
+        "langchain",
+        "llms",
+        "lmsys",
+        "userinput",
+        "vectorstore",
+        "vectorstores"
+    ]
+}

@@ -41,14 +41,14 @@ def get_text_chunks(text):
     return chunks
 
 def get_vectorstore(text_chunks):
-    embeddings = HuggingFaceInstructEmbeddings(model_name="./googleflanT5Large/instructorX1/instructor-xl") #this is local
+    embeddings = HuggingFaceInstructEmbeddings(model_name="./pretrainedModels/instructor-xl") #this is local
     vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
     print("\nVectorStore:",vectorstore, "\n")
     return vectorstore
 
 def get_conversation_chain(vectorstore):
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    model_name = "./googleflanT5Large/flan-t5-large"
+    model_name = "./pretrainedModels/flan-t5-large"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     model.config.temperature = 0.5  # Change the temperature here
