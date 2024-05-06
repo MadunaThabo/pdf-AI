@@ -33,7 +33,8 @@ def get_vectorstore(text_chunks):
 def get_conversation_chain(vectorstore):
     # Load the local model components
     model_name = "./pretrainedModels/flan-t5-large"
-    llm = HuggingFacePipeline.from_model_id(model_id= model_name, task="text2text-generation", model_kwargs={"temperature": 0, "max_length": 200})
+    # model_name = "google/flan-t5-small"
+    llm = HuggingFacePipeline.from_model_id(model_id= model_name, task="text2text-generation", model_kwargs={"temperature": 0.1, "max_length": 200})
     conversation_chain = RetrievalQA.from_chain_type(llm, retriever=vectorstore.as_retriever())
     return conversation_chain
 
